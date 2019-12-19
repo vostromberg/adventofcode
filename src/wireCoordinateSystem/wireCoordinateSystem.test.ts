@@ -1,4 +1,4 @@
-import { getClosestDistance, parseDirection, Direction, parseDistance } from "./coordinateSystem";
+import { getClosestDistance, parseDirection, Direction, parseDistance } from "./wireCoordinateSystem";
 
 describe("wireCoordinateSystem", () => {
     test("Parse directions", () => {

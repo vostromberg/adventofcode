@@ -1,5 +1,5 @@
 import { getInput } from "./day3"
-import { ICoordinate, getClosestDistance } from "../coordinateSystem/coordinateSystem";
+import { ICoordinate, getClosestDistance } from "../wireCoordinateSystem/wireCoordinateSystem";
 
 
 export const day3part1 = async () => {

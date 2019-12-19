@@ -70,8 +70,17 @@ export const getWireCoordinates = (startCoordinate: ICoordinate, wire: string[])
 export const getIntersections = (startCoordinate:ICoordinate, wireA: string[], wireB: string[]) => {
     const wireACoords = getWireCoordinates(startCoordinate, wireA);
     const wireBCoords = getWireCoordinates(startCoordinate, wireB);
-    //TODO: Improve performance for filter
-    const intersections = wireACoords.filter(a => wireBCoords.some(b => a.x === b.x && a.y == b.y));
+    //Before performance improvement for filter
+    //const intersections = wireACoords.filter(a => wireBCoords.some(b => a.x === b.x && a.y == b.y));
+
+    //After performance improvement for filter
+    //Map out A-coords to dictionary for faster lookup
+    const wireAObj:{[key:string]:ICoordinate} = {};
+    wireACoords.forEach(coord => {wireAObj[`${coord.x}:${coord.y}`] = coord});
+    //See if B-coords exists in dictionary
+    const intersections = wireBCoords.filter(coord => wireAObj[`${coord.x}:${coord.y}`] != null);
+
+
     return intersections;
 
 }
