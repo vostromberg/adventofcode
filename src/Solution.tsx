@@ -10,11 +10,9 @@ export const Solution: React.FC<ISolutionProps> = (props) => {
     useEffect(() => {
         props.solver().then(setSolution);
     }, []);
-    if (solution != null) {
-        return (<>
-            <h4>{props.name}</h4>
-            <p>{solution}</p>
-        </>);
-    }
-    return null;
+
+    return (<>
+        <h4>{props.name}</h4>
+        <p>{solution ? solution : "Calculating solution"}</p>
+    </>);
 }
