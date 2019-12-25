@@ -1,6 +1,18 @@
+const defaultStartCoordinate: ICoordinate = {
+    x: 0, y: 0, steps: 0
+}
+
 export interface ICoordinate {
     x: number;
     y: number;
+    steps: number;
+}
+
+export interface IIntersection {
+    x: number;
+    y: number;
+    wireASteps: number;
+    wireBSteps: number;
 }
 
 export enum Direction {
@@ -33,19 +45,19 @@ export const getCoordinateCalcFunction = (direction: Direction): (lastCoordinate
     switch (direction) {
         case Direction.Up:
             return (lastCoordinate: ICoordinate) => {
-                return { x: lastCoordinate.x, y: lastCoordinate.y - 1 };
+                return { x: lastCoordinate.x, y: lastCoordinate.y - 1, steps: lastCoordinate.steps + 1 };
             };
         case Direction.Right:
             return (lastCoordinate: ICoordinate) => {
-                return { x: lastCoordinate.x + 1, y: lastCoordinate.y };
+                return { x: lastCoordinate.x + 1, y: lastCoordinate.y, steps: lastCoordinate.steps + 1 };
             };
         case Direction.Down:
             return (lastCoordinate: ICoordinate) => {
-                return { x: lastCoordinate.x, y: lastCoordinate.y + 1 };
+                return { x: lastCoordinate.x, y: lastCoordinate.y + 1, steps: lastCoordinate.steps + 1 };
             };
         case Direction.Left:
             return (lastCoordinate: ICoordinate) => {
-                return { x: lastCoordinate.x - 1, y: lastCoordinate.y };
+                return { x: lastCoordinate.x - 1, y: lastCoordinate.y, steps: lastCoordinate.steps + 1 };
             };
     }
 }
@@ -67,7 +79,11 @@ export const getWireCoordinates = (startCoordinate: ICoordinate, wire: string[])
     return coordinates;
 }
 
-export const getIntersections = (startCoordinate:ICoordinate, wireA: string[], wireB: string[]) => {
+const getCoordKey = (coord: ICoordinate) => {
+    return `${coord.x}:${coord.y}`;
+}
+
+export const getIntersections = (startCoordinate: ICoordinate, wireA: string[], wireB: string[]) => {
     const wireACoords = getWireCoordinates(startCoordinate, wireA);
     const wireBCoords = getWireCoordinates(startCoordinate, wireB);
     //Before performance improvement for filter
@@ -75,23 +91,42 @@ export const getIntersections = (startCoordinate:ICoordinate, wireA: string[], w
 
     //After performance improvement for filter
     //Map out A-coords to dictionary for faster lookup
-    const wireAObj:{[key:string]:ICoordinate} = {};
-    wireACoords.forEach(coord => {wireAObj[`${coord.x}:${coord.y}`] = coord});
-    //See if B-coords exists in dictionary
-    const intersections = wireBCoords.filter(coord => wireAObj[`${coord.x}:${coord.y}`] != null);
-
+    const wireAObj: { [key: string]: ICoordinate } = {};
+    wireACoords.forEach(coord => {
+        const key = getCoordKey(coord);
+        if (!wireAObj[key] || wireAObj[key].steps > coord.steps) {
+            wireAObj[key] = coord
+        }
+    });
+    //Find intersections
+    const intersections: IIntersection[] = wireBCoords.filter(coord => wireAObj[getCoordKey(coord)] != null).map<IIntersection>(coord => {
+        const coordA = wireAObj[getCoordKey(coord)];
+        return {
+            x: coord.x,
+            y: coord.y,
+            wireASteps: coordA.steps,
+            wireBSteps: coord.steps
+        };
+    });
 
     return intersections;
 
 }
 
-export const calculateManhattanDistanceBetweenPoints = (from: ICoordinate, to: ICoordinate) => {
+export const calculateManhattanDistanceBetweenPoints = (from: ICoordinate, to: IIntersection) => {
     return (Math.abs(to.x) - Math.abs(from.x)) + (Math.abs(to.y) - Math.abs(from.y));
 }
 
-export const getClosestDistance = (startCoordinate:ICoordinate, wireA:string[], wireB:string[]) => {
+export const getClosestIntersectionByManhattanDistance = (wireA: string[], wireB: string[], startCoordinate = defaultStartCoordinate) => {
     const intersections = getIntersections(startCoordinate, wireA, wireB);
     const distances = intersections.map(x => calculateManhattanDistanceBetweenPoints(startCoordinate, x));
+    const leastDistance = Math.min(...distances);
+    return leastDistance;
+}
+
+export const getClosestIntersectionBySteps = (wireA: string[], wireB: string[], startCoordinate: ICoordinate = defaultStartCoordinate) => {
+    const intersections = getIntersections(startCoordinate, wireA, wireB);
+    const distances = intersections.map(x => x.wireASteps + x.wireBSteps);
     const leastDistance = Math.min(...distances);
     return leastDistance;
 }
