@@ -11,7 +11,7 @@ export const day4part1 = async () => {
     const input = getInput();
     const validPasswords:string[] = [];
     for(var i = input.from; i <= input.to; i++){
-        var result = isValidPassword(i.toString());
+        var result = isValidPassword(i.toString(), true);
         if(result.isValid){
             validPasswords.push(i.toString());
         }
@@ -23,7 +23,7 @@ export const day4part2 = async () => {
     const input = getInput();
     const validPasswords: string[] = [];
     for (var i = input.from; i <= input.to; i++) {
-        var result = isValidPassword(i.toString());
+        var result = isValidPassword(i.toString(), false);
         if (result.isValid) {
             validPasswords.push(i.toString());
         }

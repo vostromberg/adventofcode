@@ -5,11 +5,11 @@ export interface IPasswordValidationResult {
     doesntDecrease: boolean;
 }
 
-export const isValidPassword = (password: string): IPasswordValidationResult => {
+export const isValidPassword = (password: string, acceptLargerAdjDigits = false): IPasswordValidationResult => {
     let result: IPasswordValidationResult = {
         isValid: false,
         hasValidFormat: hasValidFormat(password),
-        hasTwoAdjacentDigits: hasTwoAdjacentDigits(password),
+        hasTwoAdjacentDigits: acceptLargerAdjDigits ? hasTwoOrMoreAdjacentDigits(password): hasAdjacentPairs(password),
         doesntDecrease: doesntDecrease(password)
     };
     result.isValid = result.hasValidFormat && result.hasTwoAdjacentDigits && result.doesntDecrease;
@@ -20,19 +20,20 @@ export const hasValidFormat = (password: string) => {
     return /^\d{6}$/.test(password);
 }
 
-export const hasTwoAdjacentDigits = (password: string) => {
-    return /(?:^|(?<=(.)))(?!\1)(.)\2{1}(?!\2)/.test(password);
-    //return /(\d)\1/.test(password);
+export const hasTwoOrMoreAdjacentDigits = (password: string) => {
+    return /(\d)\1/.test(password);
 }
 
 export const hasAdjacentPairs = (password: string) => {
+    //  return /(?:^|(?<=(.)))(?!\1)(.)\2{1}(?!\2)/.test(password);
 
     const adjacentNumbers = [];
     let lastDigit: string = "";
     let currenDigitCount = 1;
     for (var i = 0; i < password.length; i++) {
         let currentDigit = password[i];
-        if (currentDigit === lastDigit) {
+        let isSameAsPrevious = currentDigit === lastDigit;
+        if (isSameAsPrevious) {
             currenDigitCount++;
         }
         else{
@@ -43,7 +44,10 @@ export const hasAdjacentPairs = (password: string) => {
         }
         lastDigit = currentDigit;
     }
-    return adjacentNumbers.filter(x => x < 3).length > 0;
+    if(currenDigitCount > 1){
+        adjacentNumbers.push(currenDigitCount);
+    }
+    return adjacentNumbers.some(x => x == 2);
 }
 
 export const doesntDecrease = (password: string) => {
