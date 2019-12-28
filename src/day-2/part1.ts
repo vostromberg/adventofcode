@@ -6,5 +6,5 @@ export const day2part1 = async () => {
     input[1] = 12;
     input[2] = 2;
     let programResult = runProgram(input);
-    return programResult[0];
+    return programResult.programState.program[0];
 }

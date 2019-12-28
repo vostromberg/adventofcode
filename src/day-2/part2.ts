@@ -17,7 +17,7 @@ export const day2part2 = async () => {
         }
         input[1] = noun;
         input[2] = verb;
-        lastRunResult = runProgram(input)[0];
+        lastRunResult = runProgram(input).programState.program[0];
     }
     return 100 * noun + verb;
 }
