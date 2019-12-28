@@ -1,5 +1,5 @@
-import { IOperationExecutor, getParameterValue, getParameterMode } from './operation';
-import { IProgramState } from './intCodeComputer';
+import { IOperationExecutor, getParameterValue, getParameterMode } from '../operation';
+import { IProgramState } from '../intCodeComputer';
 
 export const writeInputOperation: IOperationExecutor = (programState: IProgramState, input?:number) => {
     const valuePosition = programState.program[programState.position + 1];

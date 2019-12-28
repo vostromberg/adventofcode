@@ -1,29 +1,38 @@
 import { parseOpCode, IOperationExecutor } from "./operation";
-import { addOperation } from "./addOperation";
-import { multiplyOperation } from "./multiplyOperation";
-import { writeInputOperation } from "./writeInputOperation";
-import { writeOutputOperation } from "./writeOutputOperation";
+import { addOperation } from "./operations/add";
+import { multiplyOperation } from "./operations/multiply";
+import { writeInputOperation } from "./operations/writeInput";
+import { writeOutputOperation } from "./operations/writeOutput";
+import { jumpIfFalse } from "./operations/jumpIfFalse";
+import { jumpIfTrue } from "./operations/jumpIfTrue";
+import { lessThan } from "./operations/lessThan";
+import { equal } from "assert";
+import { equals } from "./operations/equals";
 
 export enum OpCode {
     Add = 1,
     Multiply = 2,
     WriteInput = 3,
     WriteOutput = 4,
+    JumpIfTrue = 5,
+    JumpIfFalse = 6,
+    LessThan = 7,
+    Equals = 8,
     Exit = 99
 }
 
-export interface IProgramState{
-    program:number[];
-    position:number;
+export interface IProgramState {
+    program: number[];
+    position: number;
 }
 
-export interface IProgramResult{
-    programState:IProgramState;
-    output:number[];
+export interface IProgramResult {
+    programState: IProgramState;
+    output: number[];
 }
 
-export const getExecutor = (opCode:OpCode): IOperationExecutor => {
-    switch(opCode) {
+export const getExecutor = (opCode: OpCode): IOperationExecutor => {
+    switch (opCode) {
         case OpCode.Add:
             return addOperation;
         case OpCode.Multiply:
@@ -32,15 +41,23 @@ export const getExecutor = (opCode:OpCode): IOperationExecutor => {
             return writeInputOperation;
         case OpCode.WriteOutput:
             return writeOutputOperation;
+        case OpCode.JumpIfFalse:
+            return jumpIfFalse;
+        case OpCode.JumpIfTrue:
+            return jumpIfTrue;
+        case OpCode.LessThan:
+            return lessThan;
+        case OpCode.Equals:
+            return equals;
         default:
-            throw "Unknown OpCode";
+            throw "Unknown OpCode " + opCode;
     }
 }
 
-export const runProgram = (program: number[], input?: number):IProgramResult => {
-    let programState:IProgramState = {
-        program:program.slice(),
-        position:0
+export const runProgram = (program: number[], input?: number): IProgramResult => {
+    let programState: IProgramState = {
+        program: program.slice(),
+        position: 0
     };
     let isFinished = false;
     let output = [];
@@ -52,8 +69,7 @@ export const runProgram = (program: number[], input?: number):IProgramResult => 
         else {
             const operationResult = getExecutor(opCode)(programState, input);
             //console.log(operationResult);
-            if (operationResult.output) {
-                console.log(operationResult);
+            if (operationResult.output !== undefined) {
                 output.push(operationResult.output);
             }
             programState = operationResult.programState;

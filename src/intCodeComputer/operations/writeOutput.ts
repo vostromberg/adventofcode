@@ -1,5 +1,5 @@
-import { IOperationExecutor, getParameterValue, getParameterMode } from './operation';
-import { IProgramState } from './intCodeComputer';
+import { IOperationExecutor, getParameterValue, getParameterMode } from '../operation';
+import { IProgramState } from '../intCodeComputer';
 
 export const writeOutputOperation: IOperationExecutor = (programState: IProgramState) => {
     const operationInstructions = programState.program[programState.position].toString();

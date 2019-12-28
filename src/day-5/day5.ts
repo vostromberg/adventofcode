@@ -11,7 +11,7 @@ export const day5part1 = async () => {
 }
 
 export const day5part2 = async () => {
-    const input = getInput();
-
-    return "HEJ";
+    const program = getInput();
+    const result = runProgram(program, 5);
+    return result.output.join(",");
 }
