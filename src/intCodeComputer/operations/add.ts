@@ -11,6 +11,7 @@ export const addOperation: IOperationExecutor = (programState: IProgramState) =>
     program[valuePosition] = result;
     return {
         programState: { 
+            ...programState,
             program,
             position: programState.position + 4
         }

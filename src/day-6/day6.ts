@@ -1,4 +1,4 @@
-import { countTotalOrbits, getOrbits, parseOrbitMap } from "../orbitMapCalculator/orbitMapCalculator"
+import { countTotalOrbits, getOrbits, parseOrbitMap, findMinimumOrbitalTransfers } from "../orbitMapCalculator/orbitMapCalculator"
 import { day6input } from './day6-input';
 
 export const day6part1 = async () => {
@@ -7,6 +7,6 @@ export const day6part1 = async () => {
 }
 
 export const day6part2 = async () => {
-    
-    return "Hej";
+    const count = findMinimumOrbitalTransfers(getOrbits(parseOrbitMap(day6input)), "YOU", "SAN");
+    return count;
 }

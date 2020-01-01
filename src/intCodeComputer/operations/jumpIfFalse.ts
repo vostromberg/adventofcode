@@ -1,7 +1,7 @@
 import { IOperationExecutor, getParameterValue, getParameterMode } from '../operation';
 import { IProgramState } from '../intCodeComputer';
 
-export const jumpIfFalse: IOperationExecutor = (programState: IProgramState, input?:number) => {
+export const jumpIfFalse: IOperationExecutor = (programState: IProgramState) => {
     const operationInstructions = programState.program[programState.position].toString();
     const condition = getParameterValue(programState.program, programState.position + 1, getParameterMode(operationInstructions, 1));
     const newPosition = getParameterValue(programState.program, programState.position + 2, getParameterMode(operationInstructions, 2));

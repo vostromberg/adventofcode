@@ -15,7 +15,7 @@ export interface IOperationResult {
 }
 
 export interface IOperationExecutor {
-    (programState: IProgramState, input?: number): IOperationResult;
+    (programState: IProgramState): IOperationResult;
 }
 
 export const getParameterMode = (operationInfo:string, parameterPosition:number) => {

@@ -22,6 +22,7 @@ export enum OpCode {
 }
 
 export interface IProgramState {
+    input: number[];
     program: number[];
     position: number;
 }
@@ -54,8 +55,9 @@ export const getExecutor = (opCode: OpCode): IOperationExecutor => {
     }
 }
 
-export const runProgram = (program: number[], input?: number): IProgramResult => {
+export const runProgram = (program: number[], ...input: number[]): IProgramResult => {
     let programState: IProgramState = {
+        input:input.slice(),
         program: program.slice(),
         position: 0
     };
@@ -67,7 +69,7 @@ export const runProgram = (program: number[], input?: number): IProgramResult =>
             isFinished = true;
         }
         else {
-            const operationResult = getExecutor(opCode)(programState, input);
+            const operationResult = getExecutor(opCode)(programState);
             //console.log(operationResult);
             if (operationResult.output !== undefined) {
                 output.push(operationResult.output);

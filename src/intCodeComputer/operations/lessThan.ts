@@ -1,7 +1,7 @@
 import { IOperationExecutor, getParameterValue, getParameterMode } from '../operation';
 import { IProgramState } from '../intCodeComputer';
 
-export const lessThan: IOperationExecutor = (programState: IProgramState, input?: number) => {
+export const lessThan: IOperationExecutor = (programState: IProgramState) => {
     const operationInstructions = programState.program[programState.position].toString();
     const value1 = getParameterValue(programState.program, programState.position + 1, getParameterMode(operationInstructions, 1));
     const value2 = getParameterValue(programState.program, programState.position + 2, getParameterMode(operationInstructions, 2));
