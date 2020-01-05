@@ -15,20 +15,20 @@ export interface IOperationResult {
 }
 
 export interface IOperationExecutor {
-    (programState: IProgramState): IOperationResult;
+    (programState: IProgramState, input?: number): IOperationResult;
 }
 
-export const getParameterMode = (operationInfo:string, parameterPosition:number) => {
+export const getParameterMode = (operationInfo: string, parameterPosition: number) => {
     const parameterInfo = operationInfo.substring(0, operationInfo.length - 2);
-    if(parameterInfo.length == 0 || parameterPosition > parameterInfo.length){
+    if (parameterInfo.length == 0 || parameterPosition > parameterInfo.length) {
         return ParameterMode.PositionMode;
     }
-    else{
+    else {
         return parseInt(parameterInfo[Math.abs(parameterPosition - parameterInfo.length)]) as ParameterMode;
     }
 }
 
-export const getParameterValue = (program:number[], parameterPosition: number, mode:ParameterMode ) => {
+export const getParameterValue = (program: number[], parameterPosition: number, mode: ParameterMode) => {
     return mode == ParameterMode.PositionMode ? program[program[parameterPosition]] : program[parameterPosition];
 }
 

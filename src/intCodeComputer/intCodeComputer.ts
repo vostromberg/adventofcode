@@ -21,10 +21,18 @@ export enum OpCode {
     Exit = 99
 }
 
+export enum ProgramStatus {
+    NotStarted,
+    Running,
+    WaitingForInput,
+    Finished
+}
+
 export interface IProgramState {
-    input: number[];
+    input?: number;
     program: number[];
     position: number;
+    status: ProgramStatus;
 }
 
 export interface IProgramResult {
@@ -55,31 +63,38 @@ export const getExecutor = (opCode: OpCode): IOperationExecutor => {
     }
 }
 
-export const runProgram = (program: number[], ...input: number[]): IProgramResult => {
+export const runProgram = (program: number[], input?: number): IProgramResult => {
     let programState: IProgramState = {
-        input:input.slice(),
+        input,
         program: program.slice(),
-        position: 0
+        position: 0,
+        status: ProgramStatus.NotStarted
     };
-    let isFinished = false;
+    return resumeProgram(programState);
+}
+
+export const resumeProgram = (programState: IProgramState): IProgramResult => {
+    let currentState: IProgramState = programState;
+    currentState.status = ProgramStatus.Running;
     let output = [];
-    while (!isFinished) {
-        const opCode = parseOpCode(programState.program[programState.position].toString());
+    while (currentState.status != ProgramStatus.Finished && currentState.status != ProgramStatus.WaitingForInput) {
+        const opCode = parseOpCode(currentState.program[currentState.position].toString());
         if (opCode == OpCode.Exit) {
-            isFinished = true;
+            currentState.status = ProgramStatus.Finished;
         }
         else {
-            const operationResult = getExecutor(opCode)(programState);
+            const execute = getExecutor(opCode);
+            const operationResult = execute(currentState);
             //console.log(operationResult);
             if (operationResult.output !== undefined) {
                 output.push(operationResult.output);
             }
-            programState = operationResult.programState;
+            currentState = operationResult.programState;
         }
     }
 
     return {
-        programState,
+        programState: currentState,
         output
     };
 }

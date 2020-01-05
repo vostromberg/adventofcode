@@ -1,16 +1,24 @@
 import { IOperationExecutor, getParameterValue, getParameterMode } from '../operation';
-import { IProgramState } from '../intCodeComputer';
+import { IProgramState, ProgramStatus } from '../intCodeComputer';
 
 export const writeInputOperation: IOperationExecutor = (programState: IProgramState) => {
-    const valueToWrite = programState.input[0];
+    if (programState.input === undefined) {
+        return {
+            programState: {
+                ...programState,
+                status: ProgramStatus.WaitingForInput
+            }
+        }
+    }
     const valuePosition = programState.program[programState.position + 1];
     const program = programState.program.slice();
-    program[valuePosition] = valueToWrite;
+    program[valuePosition] = programState.input as number;
     return {
-        programState: { 
-           input: programState.input.slice(1),
-           program,
-           position: programState.position + 2
+        programState: {
+            ...programState,
+            input:undefined,
+            program,
+            position: programState.position + 2
         }
     };
 }
