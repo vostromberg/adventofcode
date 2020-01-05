@@ -12,6 +12,7 @@ import { day4part2, day4part1 } from './day-4/day4';
 import { day5part1, day5part2 } from './day-5/day5';
 import { day6part2, day6part1 } from './day-6/day6';
 import { day7part1, day7part2 } from './day-7/day7';
+import { day8part2, day8part1 } from './day-8/day8';
 
 const App: React.FC = () => {
   return (
@@ -30,6 +31,8 @@ const App: React.FC = () => {
       <Solution name="Day 6 - Part 2" solver={day6part2} />
       <Solution name="Day 7 - Part 1" solver={day7part1} />
       <Solution name="Day 7 - Part 2" solver={day7part2} />
+      <Solution name="Day 8 - Part 1" solver={day8part1} />
+      <Solution name="Day 8 - Part 2" solver={day8part2} />
     </div>
   );
 }
