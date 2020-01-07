@@ -6,8 +6,8 @@ import { writeOutputOperation } from "./operations/writeOutput";
 import { jumpIfFalse } from "./operations/jumpIfFalse";
 import { jumpIfTrue } from "./operations/jumpIfTrue";
 import { lessThan } from "./operations/lessThan";
-import { equal } from "assert";
 import { equals } from "./operations/equals";
+import { setRelativeBase } from "./operations/setRelativeBase";
 
 export enum OpCode {
     Add = 1,
@@ -18,7 +18,8 @@ export enum OpCode {
     JumpIfFalse = 6,
     LessThan = 7,
     Equals = 8,
-    Exit = 99
+    SetRelativeBase = 9,
+    Exit = 99,
 }
 
 export enum ProgramStatus {
@@ -33,6 +34,7 @@ export interface IProgramState {
     program: number[];
     position: number;
     status: ProgramStatus;
+    relativeBase: number;
 }
 
 export interface IProgramResult {
@@ -58,18 +60,25 @@ export const getExecutor = (opCode: OpCode): IOperationExecutor => {
             return lessThan;
         case OpCode.Equals:
             return equals;
+        case OpCode.SetRelativeBase:
+            return setRelativeBase;
         default:
             throw "Unknown OpCode " + opCode;
     }
 }
 
-export const runProgram = (program: number[], input?: number): IProgramResult => {
-    let programState: IProgramState = {
+const createInitialState = (program: number[], input?: number): IProgramState => {
+    return {
         input,
         program: program.slice(),
         position: 0,
-        status: ProgramStatus.NotStarted
+        status: ProgramStatus.NotStarted,
+        relativeBase: 0
     };
+}
+
+export const runProgram = (program: number[], input?: number): IProgramResult => {
+    let programState: IProgramState = createInitialState(program, input);
     return resumeProgram(programState);
 }
 
@@ -77,7 +86,9 @@ export const resumeProgram = (programState: IProgramState): IProgramResult => {
     let currentState: IProgramState = programState;
     currentState.status = ProgramStatus.Running;
     let output = [];
+
     while (currentState.status != ProgramStatus.Finished && currentState.status != ProgramStatus.WaitingForInput) {
+
         const opCode = parseOpCode(currentState.program[currentState.position].toString());
         if (opCode == OpCode.Exit) {
             currentState.status = ProgramStatus.Finished;
@@ -92,7 +103,6 @@ export const resumeProgram = (programState: IProgramState): IProgramResult => {
             currentState = operationResult.programState;
         }
     }
-
     return {
         programState: currentState,
         output

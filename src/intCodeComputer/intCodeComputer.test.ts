@@ -45,10 +45,10 @@ describe("intCodeComputer", () => {
         let param2 = getParameterMode(operationInstructions, 2);
         let param3 = getParameterMode(operationInstructions, 3);
         let param4 = getParameterMode("6",1);
-        expect(param1).toBe(ParameterMode.PositionMode);
-        expect(param2).toBe(ParameterMode.ImmediateMode);
-        expect(param3).toBe(ParameterMode.PositionMode);
-        expect(param4).toBe(ParameterMode.PositionMode);
+        expect(param1).toBe(ParameterMode.Position);
+        expect(param2).toBe(ParameterMode.Immediate);
+        expect(param3).toBe(ParameterMode.Position);
+        expect(param4).toBe(ParameterMode.Position);
     });
 
     test("jumptest 1 (position mode)", () => {
@@ -100,4 +100,24 @@ describe("intCodeComputer", () => {
         expect(positiveResult.output[0]).toBe(1);
         expect(negativeResult.output[0]).toBe(0);
     });
+
+    test("Program creates copy of itself", () => {
+        const program = [109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99];
+        const result = runProgram(program);
+        expect(result.output).toEqual(program);
+    })
+
+    test("Program outputs 16-digit number", () => {
+        const program = [1102,34915192,34915192,7,4,7,99,0];
+        const result = runProgram(program);
+        const output = result.output[0].toString();
+        expect(output.length).toEqual(16);
+    })
+
+    test("Program outputs middle number", () => {
+        const program = [104,1125899906842624,99];
+        const result = runProgram(program);
+        const output = result.output[0];
+        expect(output).toEqual(program[1]);
+    })
 })

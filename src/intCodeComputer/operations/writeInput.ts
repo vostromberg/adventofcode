@@ -1,4 +1,4 @@
-import { IOperationExecutor, getParameterValue, getParameterMode } from '../operation';
+import { IOperationExecutor, getParameterValue, getParameterMode, getValuePosition, ParameterMode } from '../operation';
 import { IProgramState, ProgramStatus } from '../intCodeComputer';
 
 export const writeInputOperation: IOperationExecutor = (programState: IProgramState) => {
@@ -10,7 +10,9 @@ export const writeInputOperation: IOperationExecutor = (programState: IProgramSt
             }
         }
     }
-    const valuePosition = programState.program[programState.position + 1];
+    const operationInfo = programState.program[programState.position].toString();
+    const parameterMode = getParameterMode(operationInfo, 1);
+    const valuePosition = getValuePosition(programState, programState.position + 1, parameterMode, true);
     const program = programState.program.slice();
     program[valuePosition] = programState.input as number;
     return {
