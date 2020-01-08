@@ -35,6 +35,7 @@ export interface IProgramState {
     position: number;
     status: ProgramStatus;
     relativeBase: number;
+    memory: { [key: number]: number };
 }
 
 export interface IProgramResult {
@@ -73,7 +74,8 @@ const createInitialState = (program: number[], input?: number): IProgramState =>
         program: program.slice(),
         position: 0,
         status: ProgramStatus.NotStarted,
-        relativeBase: 0
+        relativeBase: 0,
+        memory:{}
     };
 }
 
@@ -100,7 +102,9 @@ export const resumeProgram = (programState: IProgramState): IProgramResult => {
             if (operationResult.output !== undefined) {
                 output.push(operationResult.output);
             }
+
             currentState = operationResult.programState;
+
         }
     }
     return {

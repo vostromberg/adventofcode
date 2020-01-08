@@ -7,12 +7,15 @@ export interface ISolutionProps {
 
 export const Solution: React.FC<ISolutionProps> = (props) => {
     const [solution, setSolution] = useState(null);
-    useEffect(() => {
-        props.solver().then(setSolution);
-    }, []);
-
-    return (<>
+    const [isRunning, setIsRunning] = useState(false);
+    const solve = () => {
+        setIsRunning(true);
+        props.solver().then(setSolution).finally(() => setIsRunning(false));
+    }
+    return (<div className="solution">
         <h4>{props.name}</h4>
-        <p>{solution ? solution : "Calculating solution"}</p>
-    </>);
+        {(!solution && !isRunning) && <button onClick={solve}>Show solution</button>}
+        {solution && <p onClick={solve}>{solution}</p>}
+        {isRunning && <p>Calculating solution</p>}
+    </div>);
 }

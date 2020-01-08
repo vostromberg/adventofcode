@@ -17,7 +17,7 @@ import { day9part1, day9part2 } from './day-9/day9';
 
 const App: React.FC = () => {
   return (
-    <div className="App">
+    <div className="solutions">
       <Solution name="Day 1 - Part 1" solver={day1part1} />
       <Solution name="Day 1 - Part 2" solver={day1part2} />
       <Solution name="Day 2 - Part 1" solver={day2part1} />

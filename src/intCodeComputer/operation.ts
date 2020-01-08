@@ -30,20 +30,43 @@ export const getParameterMode = (operationInfo: string, parameterPosition: numbe
 }
 
 export const getParameterValue = (programState: IProgramState, parameterPosition: number, mode: ParameterMode) => {
-    //return mode == ParameterMode.PositionMode ? program[program[parameterPosition]] : program[parameterPosition];
     let valuePosition: number = getValuePosition(programState, parameterPosition, mode);
-    return programState.program[valuePosition] || 0;
-
+    if (valuePosition < programState.program.length) {
+        return programState.program[valuePosition] || 0;
+    }
+    else {
+        return programState.memory[valuePosition] || 0;
+    }
 }
 
+export const writeValue = (programState: IProgramState, valuePosition: number, value: number): IProgramState => {
+    if (valuePosition < programState.program.length) {
+        let program = programState.program.slice();
+        program[valuePosition] = value;
+        return {
+            ...programState,
+            program
+        };
+    }
+    else {
+        return {
+            ...programState,
+            memory: {
+                ...programState.memory,
+                [valuePosition]: value
+            }
+        };
+    }
+}
 export const getValuePosition = (programState: IProgramState, parameterPosition: number, mode: ParameterMode, writeOperation = false) => {
+    let memory = parameterPosition < programState.program.length ? programState.program : programState.memory;
     switch (mode) {
         case ParameterMode.Position:
-            return programState.program[parameterPosition];
+            return memory[parameterPosition];
         case ParameterMode.Immediate:
-            return writeOperation ? programState.program[parameterPosition] : parameterPosition;
+            return writeOperation ? memory[parameterPosition] : parameterPosition;
         case ParameterMode.Relative:
-            return programState.program[parameterPosition] + programState.relativeBase;
+            return memory[parameterPosition] + programState.relativeBase;
         default:
             throw "Unknown parameter mode: " + mode;
     }

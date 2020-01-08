@@ -1,4 +1,4 @@
-import { IOperationExecutor, getParameterValue, getParameterMode, getValuePosition } from '../operation';
+import { IOperationExecutor, getParameterValue, getParameterMode, getValuePosition, writeValue } from '../operation';
 import { IProgramState } from '../intCodeComputer';
 
 export const multiplyOperation: IOperationExecutor = (programState: IProgramState) => {
@@ -7,12 +7,10 @@ export const multiplyOperation: IOperationExecutor = (programState: IProgramStat
     const value2 = getParameterValue(programState, programState.position + 2, getParameterMode(operationInstructions, 2));
     const result = value1 * value2;
     const valuePosition = getValuePosition(programState, programState.position + 3, getParameterMode(operationInstructions, 3), true);
-    const program = programState.program.slice();
-    program[valuePosition] = result;
+    const newState = writeValue(programState, valuePosition, result);
     return {
         programState: { 
-            ...programState,
-            program,
+            ...newState,
             position: programState.position + 4
         }
     };
