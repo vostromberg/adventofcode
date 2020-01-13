@@ -1,13 +1,13 @@
 import { parseOpCode, IOperationExecutor } from "./operation";
-import { addOperation } from "./operations/add";
-import { multiplyOperation } from "./operations/multiply";
-import { writeInputOperation } from "./operations/writeInput";
-import { writeOutputOperation } from "./operations/writeOutput";
-import { jumpIfFalse } from "./operations/jumpIfFalse";
-import { jumpIfTrue } from "./operations/jumpIfTrue";
-import { lessThan } from "./operations/lessThan";
-import { equals } from "./operations/equals";
-import { setRelativeBase } from "./operations/setRelativeBase";
+import { addOperation } from "./operations/1-add";
+import { multiplyOperation } from "./operations/2-multiply";
+import { writeInputOperation } from "./operations/3-writeInput";
+import { writeOutputOperation } from "./operations/4-writeOutput";
+import { jumpIfFalse } from "./operations/6-jumpIfFalse";
+import { jumpIfTrue } from "./operations/5-jumpIfTrue";
+import { lessThan } from "./operations/7-lessThan";
+import { equals } from "./operations/8-equals";
+import { setRelativeBase } from "./operations/9-setRelativeBase";
 
 export enum OpCode {
     Add = 1,
